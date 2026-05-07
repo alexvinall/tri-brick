@@ -4,12 +4,31 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>tri-brick</title>
+    <style>
+      body {
+        margin: 0;
+        background: #020617;
+        color: #e2e8f0;
+        font-family: system-ui, sans-serif;
+        display: grid;
+        place-items: center;
+        min-height: 100vh;
+      }
+      .shell {
+        display: grid;
+        gap: 12px;
+      }
+      #status {
+        font-size: 14px;
+      }
+    </style>
   </head>
   <body>
-    <main>
-      <h1>tri-brick</h1>
-      <p>Triangular twist on the classic brick breaker.</p>
+    <main class="shell">
+      <canvas id="game" aria-label="tri-brick game"></canvas>
+      <p id="status">Loading…</p>
+      <p>Move with <kbd>←</kbd>/<kbd>→</kbd> or <kbd>A</kbd>/<kbd>D</kbd>.</p>
     </main>
-    <script type="module" src="/src/index.js"></script>
+    <script type="module" src="/src/main.js"></script>
   </body>
 </html>
