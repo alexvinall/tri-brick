@@ -4,7 +4,11 @@ export function createProgressionSystem({ lives = 3 } = {}) {
     score: 0,
     status: 'menu',
     onBrickHit(brick) {
-      this.score += brick.destroyed ? 100 : 25;
+      if (brick.destroyed) {
+        this.score += brick.scoreValue ?? 100;
+      } else {
+        this.score += 25;
+      }
     },
     onBallLost() {
       this.lives -= 1;
