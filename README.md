@@ -1,5 +1,8 @@
 # tri-brick
-Like the classic brick breaker games, but with more triangles
+
+Like the classic brick breaker games, but with more triangles.
+
+Built with React, Vite, and Codex.
 
 ## Running locally
 
@@ -20,8 +23,8 @@ This repository is configured to deploy on every push to `main` (and manually vi
 2. Set **Source** to **GitHub Actions**.
 3. Push to `main` to trigger `.github/workflows/deploy-pages.yml`.
 
-Expected production URL format:
+Play it here:
 
-- `https://<owner>.github.io/tri-brick/`
+- `https://alexvinall.github.io/tri-brick/`
 
 The Vite `base` path is set to `/tri-brick/` for GitHub Pages project-site hosting. If the repository is renamed, update `base` in `vite.config.js` to match the new repository name.
