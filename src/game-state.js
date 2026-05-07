@@ -5,6 +5,8 @@ import { createProgressionSystem } from './systems/progression-system.js';
 
 const FIXED_DT = 1 / 120;
 const MAX_FRAME = 0.25;
+const TRIANGLE_TILE_W = 64;
+const TRIANGLE_TILE_H = 56;
 
 export class GameState {
   constructor({ width = 800, height = 600, inputTarget = window } = {}) {
@@ -21,10 +23,50 @@ export class GameState {
   }
 
   createLevel() {
-    return [
-      new Brick({ points: [{ x: 100, y: 100 }, { x: 160, y: 100 }, { x: 130, y: 150 }], hitpoints: 1 }),
-      new Brick({ points: [{ x: 180, y: 100 }, { x: 240, y: 100 }, { x: 210, y: 150 }], hitpoints: 2 }),
-    ];
+    const tileW = TRIANGLE_TILE_W;
+    const tileH = TRIANGLE_TILE_H;
+    const rowCount = Math.max(4, Math.floor(this.viewport.width / (tileW * 1.6)));
+    const colCount = Math.max(6, Math.floor(this.viewport.width / tileW));
+    const gridTop = 64;
+    const startX = Math.max(0, (this.viewport.width - colCount * tileW) / 2);
+
+    const bricks = [];
+    for (let r = 0; r < rowCount; r += 1) {
+      for (let c = 0; c < colCount; c += 1) {
+        const orientation = (r + c) % 2 === 0 ? 'up' : 'down';
+        const x = startX + c * tileW;
+        const y = gridTop + r * tileH;
+
+        const points =
+          orientation === 'up'
+            ? [
+                { x, y: y + tileH },
+                { x: x + tileW, y: y + tileH },
+                { x: x + tileW / 2, y },
+              ]
+            : [
+                { x, y },
+                { x: x + tileW, y },
+                { x: x + tileW / 2, y: y + tileH },
+              ];
+
+        const hitpoints = r < 2 ? 2 : 1;
+        bricks.push(
+          new Brick({
+            points,
+            hitpoints,
+            hp: hitpoints,
+            scoreValue: hitpoints * 100,
+            themeId: orientation === 'up' ? 'amber' : 'violet',
+            powerupChance: 0.08,
+            orientation,
+            gridPosition: { row: r, column: c },
+          }),
+        );
+      }
+    }
+
+    return bricks;
   }
 
   start() {
@@ -116,7 +158,22 @@ export class GameState {
         radius: this.ball.radius,
         active: this.ball.active,
       },
-      bricks: this.bricks.map((brick) => ({ points: brick.points, hitpoints: brick.hitpoints, destroyed: brick.destroyed })),
+      bricks: this.bricks.map((brick) => ({
+        points: brick.points,
+        hitpoints: brick.hitpoints,
+        hp: brick.hp,
+        scoreValue: brick.scoreValue,
+        themeId: brick.themeId,
+        powerupChance: brick.powerupChance,
+        orientation: brick.orientation,
+        gridPosition: brick.gridPosition,
+        style: {
+          fill: brick.orientation === 'up' ? '#f59e0b' : '#8b5cf6',
+          stroke: '#0f172a',
+          strokeWidth: 1,
+        },
+        destroyed: brick.destroyed,
+      })),
       progression: {
         lives: this.progression.lives,
         score: this.progression.score,
